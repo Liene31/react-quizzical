@@ -13,6 +13,9 @@ main {
   color: #293264;
   font-family: "Inter", sans-serif;
   background-image: url(../src/assets/blobs-yellow.png);
+  background-repeat: no-repeat;
+  background-position: right top;
+  /* background-image: url(../src/assets/blobs-purple.png); */
 }
 
 section {
