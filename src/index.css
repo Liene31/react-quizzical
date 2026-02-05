@@ -1,0 +1,57 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f5f7fb;
+  color: #293264;
+  font-family: "Inter", sans-serif;
+  background-image: url(../src/assets/blobs-yellow.png);
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+section.start-page h1 {
+  font-family: "Karla", sans-serif;
+  font-size: 1.95rem;
+  font-weight: 800;
+}
+
+section.start-page p {
+  font-size: 1rem;
+  font-weight: normal;
+}
+
+section.start-page button {
+  background-color: #4d5b9e;
+  color: #f5f7fb;
+  border: none;
+  border-radius: 15px;
+  font-size: 1rem;
+  font-family: inherit;
+  padding: 1rem 3.8rem;
+  cursor: pointer;
+}
+
+/* font-family: "Karla", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight> 200-800;
+  font-style: normal; */
+
+/* font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>100-900;
+  font-style: normal; */
+
+/* 193 52 */
