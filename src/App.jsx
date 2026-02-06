@@ -21,6 +21,7 @@ function App() {
           <button onClick={startGame}>Start quiz</button>
         </section>
       )}
+
       {switchPage && <GamePlay />}
     </main>
   );
