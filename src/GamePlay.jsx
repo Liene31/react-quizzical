@@ -1,43 +1,52 @@
-import { da } from "@faker-js/faker";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
 export const GamePlay = () => {
-  const [data, setData] = useState(null);
+  const [questions, setQuestions] = useState(null);
 
   useEffect(() => {
     axios
       .get(`https://opentdb.com/api.php?amount=5&type=multiple`)
       .then((res) => {
-        setData(res.data.results);
+        setQuestions(res.data.results);
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
 
-  if (data) {
-    console.log(data[0].incorrect_answers);
+  if (!questions) {
+    console.log("loading");
+  } else {
   }
+
+  const question = questions?.map((question) => {
+    return <h2>{question.question}</h2>;
+  });
+  // console.log(question);
 
   // RETURN
   return (
     <section className="game-play">
-      {data?.map((item) => {
-        return (
-          <div className="question-container">
-            <h2>{item?.question}</h2>
-            <form>
-              {/*  */}
-              <div className="answers">
-                <input type="radio" id="one" name="one" value="one" checked />
-                <label htmlFor="one">{item?.incorrect_answers[0]}</label>
-              </div>
-              {/*  */}
-            </form>
+      <div className="question-container">
+        <h2>"Question"</h2>
+        <form>
+          <div className="answers">
+            <input type="radio" id="one" name="one" value="one" checked />
+            <label htmlFor="one">answer</label>
           </div>
-        );
-      })}
+        </form>
+      </div>
+
+      <div className="question-container">
+        <h2>"Question"</h2>
+        <form>
+          <div className="answers">
+            <input type="radio" id="one" name="one" value="one" checked />
+            <label htmlFor="one">answer</label>
+          </div>
+        </form>
+      </div>
 
       <button>Check answers</button>
     </section>
