@@ -1,5 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { nanoid } from "nanoid";
+import { decode } from "html-entities";
 
 export const GamePlay = () => {
   const [questions, setQuestions] = useState(null);
@@ -15,38 +17,42 @@ export const GamePlay = () => {
       });
   }, []);
 
-  if (!questions) {
-    console.log("loading");
-  } else {
-  }
-
-  const question = questions?.map((question) => {
-    return <h2>{question.question}</h2>;
+  const questionsObject = questions?.map((question) => {
+    const answers = question.incorrect_answers;
+    answers.push(question.correct_answer);
+    return {
+      id: nanoid(),
+      question: decode(question.question),
+      answers: answers,
+    };
   });
-  // console.log(question);
 
   // RETURN
   return (
     <section className="game-play">
-      <div className="question-container">
-        <h2>"Question"</h2>
-        <form>
-          <div className="answers">
-            <input type="radio" id="one" name="one" value="one" checked />
-            <label htmlFor="one">answer</label>
+      {questionsObject?.map((question) => {
+        return (
+          <div key={question.id} className="question-container">
+            <h2>{question.question}</h2>
+            <form>
+              {question.answers.map((answer, index) => {
+                return (
+                  <div key={index} className="answers">
+                    <input
+                      type="radio"
+                      id="one"
+                      name="one"
+                      value="one"
+                      checked
+                    />
+                    <label htmlFor="one">{decode(answer)}</label>
+                  </div>
+                );
+              })}
+            </form>
           </div>
-        </form>
-      </div>
-
-      <div className="question-container">
-        <h2>"Question"</h2>
-        <form>
-          <div className="answers">
-            <input type="radio" id="one" name="one" value="one" checked />
-            <label htmlFor="one">answer</label>
-          </div>
-        </form>
-      </div>
+        );
+      })}
 
       <button>Check answers</button>
     </section>
