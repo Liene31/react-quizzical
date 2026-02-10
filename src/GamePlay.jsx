@@ -5,19 +5,27 @@ import { decode } from "html-entities";
 
 export const GamePlay = () => {
   const [questions, setQuestions] = useState(null);
-  const [selectedAnswer, setSelectedAnswer] = useState({
-    id: "",
-  });
+  const [selectedAnswer, setSelectedAnswer] = useState({});
+
+  //Function to shuffle answers
+  const shuffle = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
 
   //Loops through the questions and creates the object with questions and answers
   const questionsObject = (data) =>
     data?.map((question) => {
-      const answers = question.incorrect_answers;
-      answers.push(question.correct_answer);
+      const answers = [...question.incorrect_answers, question.correct_answer];
+      console.log(question.correct_answer);
       return {
         id: nanoid(),
         question: decode(question.question),
-        answers: answers,
+        correctAnswer: decode(question.correct_answer),
+        answers: shuffle(answers),
       };
     });
 
@@ -53,8 +61,6 @@ export const GamePlay = () => {
     console.log(selectedAnswer);
   }
 
-  console.log(selectedAnswer);
-
   // RETURN
   return (
     <section className="game-play">
@@ -64,6 +70,8 @@ export const GamePlay = () => {
             <h2>{question.question}</h2>
             <form>
               {question.answers.map((answer, index) => {
+                const isSelected =
+                  selectedAnswer[question?.id] === decode(answer);
                 return (
                   <div key={index} className="answers">
                     <input
@@ -71,10 +79,13 @@ export const GamePlay = () => {
                       id={question.id + index}
                       name={question.id}
                       value={decode(answer)}
-                      checked={selectedAnswer[question?.id] === decode(answer)}
+                      checked={isSelected}
                       onChange={handleAnswer}
                     />
-                    <label htmlFor={question.id + index}>
+                    <label
+                      htmlFor={question.id + index}
+                      className={isSelected ? "checked" : undefined}
+                    >
                       {decode(answer)}
                     </label>
                   </div>

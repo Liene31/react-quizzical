@@ -99,6 +99,10 @@ section.game-play label:hover {
   background-color: #d6dbf5;
 }
 
+section.game-play label.checked {
+  background-color: #d6dbf5;
+}
+
 section.game-play button {
   padding: 1rem 2rem;
   margin-top: 2rem;
