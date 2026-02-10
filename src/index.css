@@ -103,6 +103,14 @@ section.game-play label.checked {
   background-color: #d6dbf5;
 }
 
+section.game-play label.correct-answers {
+  background-color: #94d7a2;
+}
+
+section.game-play label.wrong-answers {
+  background-color: #f8bcbc;
+}
+
 section.game-play button {
   padding: 1rem 2rem;
   margin-top: 2rem;

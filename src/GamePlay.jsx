@@ -4,8 +4,10 @@ import { nanoid } from "nanoid";
 import { decode } from "html-entities";
 
 export const GamePlay = () => {
+  //State variables
   const [questions, setQuestions] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState({});
+  const [checkAnswers, setCheckAnswers] = useState(false);
 
   //Function to shuffle answers
   const shuffle = (array) => {
@@ -20,7 +22,7 @@ export const GamePlay = () => {
   const questionsObject = (data) =>
     data?.map((question) => {
       const answers = [...question.incorrect_answers, question.correct_answer];
-      console.log(question.correct_answer);
+
       return {
         id: nanoid(),
         question: decode(question.question),
@@ -59,7 +61,12 @@ export const GamePlay = () => {
   function handleSubmit(e) {
     e.preventDefault();
     console.log(selectedAnswer);
+    console.log(questions.map((answer) => answer.correctAnswer));
+
+    setCheckAnswers((prev) => (prev ? false : true));
   }
+
+  console.log(checkAnswers);
 
   // RETURN
   return (
@@ -72,6 +79,11 @@ export const GamePlay = () => {
               {question.answers.map((answer, index) => {
                 const isSelected =
                   selectedAnswer[question?.id] === decode(answer);
+
+                const isCorrect = answer === question.correctAnswer;
+                const isWrong =
+                  question.correctAnswer !== selectedAnswer[question?.id];
+
                 return (
                   <div key={index} className="answers">
                     <input
@@ -84,7 +96,15 @@ export const GamePlay = () => {
                     />
                     <label
                       htmlFor={question.id + index}
-                      className={isSelected ? "checked" : undefined}
+                      className={
+                        checkAnswers && isCorrect
+                          ? "correct-answers"
+                          : checkAnswers && isSelected && isWrong
+                            ? "wrong-answers"
+                            : isSelected
+                              ? "checked"
+                              : undefined
+                      }
                     >
                       {decode(answer)}
                     </label>
