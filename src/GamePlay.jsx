@@ -5,7 +5,9 @@ import { decode } from "html-entities";
 
 export const GamePlay = () => {
   const [questions, setQuestions] = useState(null);
+  const [selectedAnswer, setSelectedAnswer] = useState();
 
+  //Fetch the data from Trivia API
   useEffect(() => {
     axios
       .get(`https://opentdb.com/api.php?amount=5&type=multiple`)
@@ -17,6 +19,7 @@ export const GamePlay = () => {
       });
   }, []);
 
+  //Loops through the questions and creates the object with questions and answers
   const questionsObject = questions?.map((question) => {
     const answers = question.incorrect_answers;
     answers.push(question.correct_answer);
@@ -26,6 +29,19 @@ export const GamePlay = () => {
       answers: answers,
     };
   });
+
+  //Handles the answer selected
+  function handleAnswer(e) {
+    setSelectedAnswer(e.target.value);
+  }
+
+  //Button to check answers
+  function handleSubmit(e) {
+    e.preventDefault();
+    console.log(selectedAnswer);
+  }
+
+  console.log(selectedAnswer);
 
   // RETURN
   return (
@@ -41,9 +57,10 @@ export const GamePlay = () => {
                     <input
                       type="radio"
                       id="one"
-                      name="one"
-                      value="one"
-                      checked
+                      name="answer"
+                      value={decode(answer)}
+                      checked={selectedAnswer === decode(answer)}
+                      onChange={handleAnswer}
                     />
                     <label htmlFor="one">{decode(answer)}</label>
                   </div>
@@ -54,7 +71,7 @@ export const GamePlay = () => {
         );
       })}
 
-      <button>Check answers</button>
+      <button onClick={handleSubmit}>Check answers</button>
     </section>
   );
 };
