@@ -5,34 +5,46 @@ import { decode } from "html-entities";
 
 export const GamePlay = () => {
   const [questions, setQuestions] = useState(null);
-  const [selectedAnswer, setSelectedAnswer] = useState();
+  const [selectedAnswer, setSelectedAnswer] = useState({
+    id: "",
+  });
+
+  //Loops through the questions and creates the object with questions and answers
+  const questionsObject = (data) =>
+    data?.map((question) => {
+      const answers = question.incorrect_answers;
+      answers.push(question.correct_answer);
+      return {
+        id: nanoid(),
+        question: decode(question.question),
+        answers: answers,
+      };
+    });
 
   //Fetch the data from Trivia API
   useEffect(() => {
     axios
       .get(`https://opentdb.com/api.php?amount=5&type=multiple`)
       .then((res) => {
-        setQuestions(res.data.results);
+        setQuestions(questionsObject(res.data.results));
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
 
-  //Loops through the questions and creates the object with questions and answers
-  const questionsObject = questions?.map((question) => {
-    const answers = question.incorrect_answers;
-    answers.push(question.correct_answer);
-    return {
-      id: nanoid(),
-      question: decode(question.question),
-      answers: answers,
-    };
-  });
-
   //Handles the answer selected
   function handleAnswer(e) {
-    setSelectedAnswer(e.target.value);
+    const answer = e.target.value;
+    const answerId = e.target.name;
+
+    setSelectedAnswer((prev) => {
+      const answers = {
+        ...prev,
+        [answerId]: answer,
+      };
+      return answers;
+    });
   }
 
   //Button to check answers
@@ -46,7 +58,7 @@ export const GamePlay = () => {
   // RETURN
   return (
     <section className="game-play">
-      {questionsObject?.map((question) => {
+      {questions?.map((question) => {
         return (
           <div key={question.id} className="question-container">
             <h2>{question.question}</h2>
@@ -56,13 +68,15 @@ export const GamePlay = () => {
                   <div key={index} className="answers">
                     <input
                       type="radio"
-                      id="one"
-                      name="answer"
+                      id={question.id + index}
+                      name={question.id}
                       value={decode(answer)}
-                      checked={selectedAnswer === decode(answer)}
+                      checked={selectedAnswer[question?.id] === decode(answer)}
                       onChange={handleAnswer}
                     />
-                    <label htmlFor="one">{decode(answer)}</label>
+                    <label htmlFor={question.id + index}>
+                      {decode(answer)}
+                    </label>
                   </div>
                 );
               })}
