@@ -67,11 +67,10 @@ export const GamePlay = () => {
   //Button - restarts the game
   function newGameBtn() {
     setCheckAnswers(false);
+    //flips to true and triggers the useEffect() by newGame in dependency to re-run and fetch new questions
     setNewGame((prev) => (prev ? false : true));
     setSelectedAnswer({});
   }
-
-  console.log(questions);
 
   // RETURN
   return (
@@ -89,6 +88,11 @@ export const GamePlay = () => {
                 const isWrong =
                   question.correctAnswer !== selectedAnswer[question?.id];
 
+                // console.log(answer, question.correctAnswer);
+
+                if (answer === question.correctAnswer) {
+                  console.log("true");
+                }
                 return (
                   <div key={index} className="answers">
                     <input
