@@ -5,9 +5,10 @@ import { decode } from "html-entities";
 
 export const GamePlay = () => {
   //State variables
-  const [questions, setQuestions] = useState(null);
+  const [questions, setQuestions] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState({});
   const [checkAnswers, setCheckAnswers] = useState(false);
+  const [newGame, setNewGame] = useState(false);
 
   //Function to shuffle answers
   const shuffle = (array) => {
@@ -41,7 +42,7 @@ export const GamePlay = () => {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [newGame]);
 
   //Handles the answer selected
   function handleAnswer(e) {
@@ -57,16 +58,20 @@ export const GamePlay = () => {
     });
   }
 
-  //Button to check answers
+  //Button - checks if the "Check Answers" is clicked and flips boolean
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(selectedAnswer);
-    console.log(questions.map((answer) => answer.correctAnswer));
-
     setCheckAnswers((prev) => (prev ? false : true));
   }
 
-  console.log(checkAnswers);
+  //Button - restarts the game
+  function newGameBtn() {
+    setCheckAnswers(false);
+    setNewGame((prev) => (prev ? false : true));
+    setSelectedAnswer({});
+  }
+
+  console.log(questions);
 
   // RETURN
   return (
@@ -116,7 +121,16 @@ export const GamePlay = () => {
         );
       })}
 
-      <button onClick={handleSubmit}>Check answers</button>
+      {checkAnswers ? (
+        <div className="game-end">
+          <p>You scored 3/5 correct answers</p>
+          <button className="game-end-btn" onClick={newGameBtn}>
+            Play again
+          </button>
+        </div>
+      ) : (
+        <button onClick={handleSubmit}>Check answers</button>
+      )}
     </section>
   );
 };
