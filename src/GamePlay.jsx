@@ -10,6 +10,17 @@ export const GamePlay = () => {
   const [checkAnswers, setCheckAnswers] = useState(false);
   const [newGame, setNewGame] = useState(false);
 
+  //Derived variables
+  const correctAnswers = questions.map((answer) => {
+    return answer.correctAnswer;
+  });
+  const userSelection = Object.values(selectedAnswer);
+  //Compares user choice with correct answers,
+  //if correct, filter creates array with matching cases
+  const correctAnswerCount = userSelection.filter((choice) =>
+    correctAnswers.includes(choice),
+  ).length;
+
   //Function to shuffle answers
   const shuffle = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -22,13 +33,17 @@ export const GamePlay = () => {
   //Loops through the questions and creates the object with questions and answers
   const questionsObject = (data) =>
     data?.map((question) => {
-      const answers = [...question.incorrect_answers, question.correct_answer];
+      const correct = decode(question.correct_answer);
+      const answers = shuffle([
+        ...question.incorrect_answers.map((answer) => decode(answer)),
+        correct,
+      ]);
 
       return {
         id: nanoid(),
         question: decode(question.question),
-        correctAnswer: decode(question.correct_answer),
-        answers: shuffle(answers),
+        correctAnswer: correct,
+        answers: answers,
       };
     });
 
@@ -81,25 +96,19 @@ export const GamePlay = () => {
             <h2>{question.question}</h2>
             <form>
               {question.answers.map((answer, index) => {
-                const isSelected =
-                  selectedAnswer[question?.id] === decode(answer);
+                const isSelected = selectedAnswer[question?.id] === answer;
 
                 const isCorrect = answer === question.correctAnswer;
                 const isWrong =
                   question.correctAnswer !== selectedAnswer[question?.id];
 
-                // console.log(answer, question.correctAnswer);
-
-                if (answer === question.correctAnswer) {
-                  console.log("true");
-                }
                 return (
                   <div key={index} className="answers">
                     <input
                       type="radio"
                       id={question.id + index}
                       name={question.id}
-                      value={decode(answer)}
+                      value={answer}
                       checked={isSelected}
                       onChange={handleAnswer}
                     />
@@ -115,7 +124,7 @@ export const GamePlay = () => {
                               : undefined
                       }
                     >
-                      {decode(answer)}
+                      {answer}
                     </label>
                   </div>
                 );
@@ -127,13 +136,20 @@ export const GamePlay = () => {
 
       {checkAnswers ? (
         <div className="game-end">
-          <p>You scored 3/5 correct answers</p>
+          <p>
+            You scored {correctAnswerCount}/{questions.length} correct answers
+          </p>
           <button className="game-end-btn" onClick={newGameBtn}>
             Play again
           </button>
         </div>
       ) : (
-        <button onClick={handleSubmit}>Check answers</button>
+        <button
+          onClick={handleSubmit}
+          disabled={userSelection.length !== questions.length ? true : false}
+        >
+          Check answers
+        </button>
       )}
     </section>
   );
